@@ -51,7 +51,9 @@ def operator_str(operator):
     return None
 
 def pretty_print(cnf_exp):
-    print [" ^ ".join(cnf) for cnf in cnf_exp]
+    print " ^ ".join(
+            [" V ".join(map(operator_str, cnf)) 
+                for cnf in cnf_exp])
 
 def main():
     random.seed(time.time())
