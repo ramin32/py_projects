@@ -45,15 +45,31 @@ def solve(size):
 
 def operator_str(operator):
     if operator == identity:
-       return 'identity',
+       return 'identity'
     elif operator == negate:
-        return 'negate', 
-    return None
+        return 'negate' 
+
+    raise ValueError('input %s not negate or identity' % str(operator))
 
 def pretty_print(cnf_exp):
-    print " ^ ".join(
-            [" V ".join(map(operator_str, cnf)) 
-                for cnf in cnf_exp])
+    print " ^ ".join(["".join(('('," V ".join(map(operator_str, cnf)),' )')) for cnf in cnf_exp])
+
+#    for cnf in cnf_exp[:-1]:
+#        print '(',
+#        for op in cnf[:-1]:
+#            print operator_str(op), 'V',
+#        print operator_str(cnf[-1]),
+#        print ')',
+#        print '^', 
+#
+#    print '(',
+#    for op in cnf_exp[-1][:-1]:
+#        print operator_str(op), 'V',
+#    print operator_str(cnf_exp[-1][-1]),
+#    print ')',
+
+    
+#print " ^ ".join( [ " V ".join(map(operator_str, cnf) )  for cnf in cnf_exp])
 
 def main():
     random.seed(time.time())

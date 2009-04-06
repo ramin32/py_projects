@@ -13,9 +13,9 @@ def print_list(list):
 def partition(list, start, end):
     pivot = list[random.randint(start, end)]
     while True:
-        while list[start] <= pivot:
+        while list[start] < pivot:
             start += 1
-        while list[end] >= pivot:
+        while list[end] > pivot:
             end -= 1
 
         if start >= end:
@@ -28,19 +28,22 @@ def quicksort(list, start, end):
         return
     pivot = partition(list, start, end)
     partition(list, start, pivot)
-    partition(list, pivot , end)
+    partition(list, pivot, end)
 
 def main():
     l = range(100)
-    random.shuffle(l)
-    print 'Shuffled list: %s' % l
+    l2 = []
+    for i in xrange(10):
+        l2.append(random.choice(l))
 
-    quicksort(l, 0, len(l)-1)
-    print 'Sorted list: %s' % l
+    print 'Unordered list: %' % l2
+
+    quicksort(l2, 0, len(l2)-1)
+    print 'Ordered list: %' % l2
 
 if __name__ == '__main__':
     main()
 
 
 
-        
+
