@@ -15,33 +15,50 @@
 import sys
 import random
 import time
+import math
 
-def negate(b):
-    """Negates the input."""
-    return not b
+"""Negates the input."""
+negate = lambda b: not b
 
-def identify(b):
-    """Returns the identify of the input."""
-    return b
+"""Returns the identify of the input."""
+identify = lambda b: b
 
 def generate_random_operator_list():
     """Generates a 3-cnf list."""
     operators = (negate, identify)
-    return [random.choice(operators) for i in xrange(3)]
+    return tuple([random.choice(operators) for i in xrange(3)])
 
 def create_random_3_cnf_expression(size):
     """Creates a list of 3-cnf lists of given size."""
     expression = []
-    for i in xrange(0, size, 3):
+    for i in xrange(size):
         expression.append(generate_random_operator_list())
 
-    return expression
+    return tuple(expression)
+
+def padded_binary(x, max_size):
+    """Returns x as a binary string padded with 0's upto max_size."""
+    binary = bin(x)[2:]
+    padding_left = max_size - len(binary)
+    if padding_left > 0:
+        binary = ''.join((''.join(['0' for i in xrange(padding_left)]), binary))
+    return binary
+            
+def evaluate_cnf(cnf_exp, binary_string):
+    """Plugs in the binary string into the cnf expression evaluating to true or false."""
+    pass
 
 
-def solve_cnf(size):
+
+def solve_cnf(cnf_exp):
     """Returns first 3-cnf-sat match using bruteforce."""
+    size = len(cnf_exp) * 3
     for i in xrange(2**size):
-        printfoo
+        binary_string = padded_binary(i, size)
+        if evaluate_cnf(cnf_exp, binary_string):
+            return binary_string
+    return None
+
 
 def operator_str(operator):
     """Returns a pretty string of the function."""
@@ -62,7 +79,16 @@ def pretty_print(cnf_exp):
 def main():
     random.seed(time.time())
     input_size = int(sys.argv[1])
-    pretty_print(create_random_3_cnf_expression(input_size))
+    
+    generated_cnf_expression = create_random_3_cnf_expression(input_size)
+    print 'Generated 3-CNF Expression:'
+    pretty_print(generated_cnf_expression)
+    
+    solution = solve_cnf(generated_cnf_expression)
+    print 'Solution:'
+    print solution
+
+
 
 if __name__ == '__main__':
     main()
