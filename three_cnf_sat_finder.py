@@ -20,56 +20,44 @@ def negate(b):
     """Negates the input."""
     return not b
 
-def identity(b):
-    """Returns the identity of the input."""
+def identify(b):
+    """Returns the identify of the input."""
     return b
 
-def generate_random_operator_tuple():
-    """Generates a 3-cnf tuple."""
-    operators = (negate, identity)
-    return (random.choice(operators),
-            random.choice(operators),
-            random.choice(operators))
+def generate_random_operator_list():
+    """Generates a 3-cnf list."""
+    operators = (negate, identify)
+    return [random.choice(operators) for i in xrange(3)]
 
 def create_random_3_cnf_expression(size):
-    """Creates a list of 3-cnf tuples of given size."""
+    """Creates a list of 3-cnf lists of given size."""
     expression = []
     for i in xrange(0, size, 3):
-        expression.append(generate_random_operator_tuple())
+        expression.append(generate_random_operator_list())
 
     return expression
 
-def solve(size):
+
+def solve_cnf(size):
+    """Returns first 3-cnf-sat match using bruteforce."""
     for i in xrange(2**size):
         printfoo
 
 def operator_str(operator):
-    if operator == identity:
-       return 'identity'
+    """Returns a pretty string of the function."""
+    if operator == identify:
+       return 'identify'
     elif operator == negate:
         return 'negate' 
 
-    raise ValueError('input %s not negate or identity' % str(operator))
+    raise ValueError('input %s not negate or identify' % str(operator))
 
 def pretty_print(cnf_exp):
-    print " ^ ".join(["".join(('('," V ".join(map(operator_str, cnf)),' )')) for cnf in cnf_exp])
+    """Pretty prints a cnf expression."""
+    create_cnf_string = lambda cnf: " V ".join(map(operator_str, cnf))
+    parentecize = lambda inner_part: "".join(('(',inner_part ,' )'))
 
-#    for cnf in cnf_exp[:-1]:
-#        print '(',
-#        for op in cnf[:-1]:
-#            print operator_str(op), 'V',
-#        print operator_str(cnf[-1]),
-#        print ')',
-#        print '^', 
-#
-#    print '(',
-#    for op in cnf_exp[-1][:-1]:
-#        print operator_str(op), 'V',
-#    print operator_str(cnf_exp[-1][-1]),
-#    print ')',
-
-    
-#print " ^ ".join( [ " V ".join(map(operator_str, cnf) )  for cnf in cnf_exp])
+    print " ^ ".join([parentecize(create_cnf_string(cnf)) for cnf in cnf_exp])
 
 def main():
     random.seed(time.time())
