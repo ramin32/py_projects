@@ -17,6 +17,8 @@ import random
 import time
 import math
 
+# TODO Move all cnf logic into a cnf class
+
 """Negates the input."""
 negate = lambda b: not b
 
