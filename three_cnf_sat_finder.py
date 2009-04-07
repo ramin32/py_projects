@@ -5,6 +5,19 @@
 #
 # 3-CNF-Satisfiable permutation finder.
 #
+# Usage: 
+#   three_cnf_sat_finder.py <number of cnf tuples>
+#
+# Example:
+#   [ramin@desktop py_projects]$ ./three_cnf_sat_finder.py 3
+#   Generated 3-CNF Expression:
+#        (negate(X) V identify(X) V identify(X)) ^ 
+#        (identify(X) V negate(X) V identify(X)) ^ 
+#        (negate(X) V identify(X) V negate(X))
+#    
+#   Solution:
+#       [[False, False, False], [False, False, False], [False, False, False]]
+#
 #
 # Author:
 # Ramin Rakhamimov
@@ -41,7 +54,6 @@ def create_boolean_groups(x, max_size):
     booleans = [{'0': False, '1':True}[b] for b in raw_binary] # map 0's and 1's to booleans
     binary_groups = group_split(booleans, 3) 
     return binary_groups
-
 
 def group_split(seq, size):
     """Splits the given sequence into groups of size."""
@@ -93,9 +105,6 @@ def main():
     print 'Solution:'
     print solution
         
-
-
-
 if __name__ == '__main__':
     main()
 
