@@ -56,9 +56,12 @@ negate = lambda b: not b
 """Returns the identify of the input."""
 identify = lambda b: b
 
-def forloop(n):
+def forloop(start, end):
     """loop for long values."""
-    return itertools.islice(itertools.count(0), n)
+    while start < end:
+        yield start
+        start += 1
+
 
 def generate_cnf_tuple(cnf_size):
     """Generates a cnf list."""
@@ -93,7 +96,7 @@ def evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
 def solve_cnf(cnf_exp, cnf_size):
     """Returns first cnf-sat match using bruteforce."""
     size = len(cnf_exp) * cnf_size
-    for i in forloop(2**size):
+    for i in forloop(0, 2**size):
         boolean_groups = create_boolean_groups(i, size, cnf_size)
         if evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
             return boolean_groups
