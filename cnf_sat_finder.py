@@ -25,14 +25,20 @@
 #   cnf_sat_finder.py <cnf size> <number of cnf tuples>
 #
 # Example:
-#   [ramin@desktop py_projects]$ ./cnf_sat_finder.py 3 3
+#   [ramin@laptop py_projects]$ ./cnf_sat_finder.py 3 3
 #   Generated CNF Expression:
-#        (negate(X) V identify(X) V identify(X)) ^ 
-#        (identify(X) V negate(X) V identify(X)) ^ 
-#        (negate(X) V identify(X) V negate(X))
-#    
+#       (identify(X) or identify(X) or identify(X)) and
+#       (identify(X) or negate(X) or identify(X)) and
+#       (identify(X) or negate(X) or identify(X))
 #   Solution:
-#       [[False, False, False], [False, False, False], [False, False, False]]
+#       (identify(False) or identify(False) or identify(True)) and
+#       (identify(False) or negate(False) or identify(False)) and
+#       (identify(False) or negate(False) or identify(False))
+#   Solution took 0.00402617454529 sec to compute running 64 iterations
+#   Architecture run on: 
+#   Linux laptop 2.6.29-ARCH #1 SMP PREEMPT Tue Apr 7 12:47:56 UTC 2009 i686
+#   
+#
 #
 #
 # Author:
@@ -46,6 +52,7 @@ import random
 import time
 import math
 import itertools
+import os
 
 """Negates the input."""
 negate = lambda b: not b
@@ -144,7 +151,8 @@ def main():
     solution, iterations = solve_cnf(generated_cnf_expression, cnf_size)
     print 'Solution:'
     pretty_print(generated_cnf_expression, solution)
-    print 'Solution took %s time to compute running %s iterations' % (time.time() - before, iterations)
+    print 'Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations)
+    print 'Architecture run on: \n%s' % ' '.join(os.uname()) 
         
 if __name__ == '__main__':
     main()
