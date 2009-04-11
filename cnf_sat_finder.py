@@ -1,32 +1,32 @@
 #!/usr/bin/env python
 
 ###############################################################################
-# three_cnf_sat_finder.py
+# cnf_sat_finder.py
 #
-# 3-CNF-Satisfiable solution finder.
+# CNF-Satisfiable solution finder.
 #
 # Description:
 # Permutes through all the boolean variations from 0 till 2^n
 # Plugs in each boolean permutation into the cnf expression 
 # until a solution is found.
 #
-# 3-cnf expressions are represented as a list of tuples (of size 3)
+# cnf expressions are represented as a list of tuples 
 # containing either of the following 2 lambda functions:
 #   negate = lambda b: not b
 #   identify = lambda b: b
 # 
-# These 3-cnf expressions are randomly generated in to which the boolean permutations
-# are plugged into to evaluate its truthiness.
+# These cnf expressions are randomly generated in to which the boolean 
+# permutations are plugged into to evaluate its truthiness.
 #
 ############################################################################### 
 # 
 # 
 # Usage: 
-#   three_cnf_sat_finder.py <number of cnf tuples>
+#   cnf_sat_finder.py <cnf size> <number of cnf tuples>
 #
 # Example:
-#   [ramin@desktop py_projects]$ ./three_cnf_sat_finder.py 3
-#   Generated 3-CNF Expression:
+#   [ramin@desktop py_projects]$ ./cnf_sat_finder.py 3 3
+#   Generated CNF Expression:
 #        (negate(X) V identify(X) V identify(X)) ^ 
 #        (identify(X) V negate(X) V identify(X)) ^ 
 #        (negate(X) V identify(X) V negate(X))
@@ -47,21 +47,17 @@ import time
 import math
 import itertools
 
-# TODO Move all cnf logic into a cnf class
-
-
 """Negates the input."""
 negate = lambda b: not b
 
 """Returns the identify of the input."""
 identify = lambda b: b
 
-def forloop(start, end):
+def for_loop(start, end):
     """loop for long values."""
     while start < end:
         yield start
         start += 1
-
 
 def generate_cnf_tuple(cnf_size):
     """Generates a cnf list."""
@@ -90,17 +86,21 @@ def group_split(seq, size):
 
 
 def evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
-    """Plugs in the binary string into the cnf expression evaluating to true or false."""
-    return all(any(f(b) for f,b in itertools.izip(cnf,booleans)) for cnf, booleans in itertools.izip(cnf_exp, boolean_groups))
+    """Plugs in the binary string into the cnf expression 
+    evaluating to true or false."""
+    return all(any(f(b) for f,b in itertools.izip(cnf,booleans)) 
+               for cnf, booleans in itertools.izip(cnf_exp, boolean_groups))
 
 def solve_cnf(cnf_exp, cnf_size):
     """Returns first cnf-sat match using bruteforce."""
     size = len(cnf_exp) * cnf_size
-    for i in forloop(0, 2**size):
+    iterations = 0
+    for i in for_loop(0, 2**size):
         boolean_groups = create_boolean_groups(i, size, cnf_size)
         if evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
-            return boolean_groups
-    return None
+            return boolean_groups, iterations
+        iterations += 1
+    return None, iterations
 
 
 def operator_str(operator, param='X'):
@@ -112,20 +112,27 @@ def operator_str(operator, param='X'):
 
     raise ValueError('input %s not negate or identify' % str(operator))
 
-def pretty_print(cnf_exp):
-    """Pretty prints a cnf expression."""
-    create_cnf_string = lambda cnf: " V ".join(map(operator_str, cnf))
-    parentecize = lambda inner_part: "".join(('(',inner_part ,')'))
+def create_cnf_string(cnf, booleans):
+    if booleans == None:
+        booleans = itertools.repeat('X')
+    return " or ".join(operator_str(op, param) for op, param in  itertools.izip(cnf, booleans))
 
-    print " ^ ".join([parentecize(create_cnf_string(cnf)) for cnf in cnf_exp])
+def parentecize(inner_part):
+    return "".join(('(',inner_part ,')'))
 
+def cnfize(cnf, booleans):
+    return parentecize(create_cnf_string(cnf, booleans))
+
+def pretty_print(cnf_exp, solution=itertools.repeat(None)):
+    print '\t' + " and\n\t".join( cnfize(cnf, booleans) for cnf, booleans in itertools.izip(cnf_exp, solution))
+    
 def main():
     random.seed(time.time())
     try:
         cnf_size = int(sys.argv[1])
         input_size = int(sys.argv[2])
     except IndexError:
-        print 'Usage: three_cnf_sat_finder.py <cnf size> <number of cnf tuples>'
+        print 'Usage: cnf_sat_finder.py <cnf size> <number of cnf tuples>'
         sys.exit(1)
 
     
@@ -133,9 +140,11 @@ def main():
     print 'Generated CNF Expression:'
     pretty_print(generated_cnf_expression)
     
-    solution = solve_cnf(generated_cnf_expression, cnf_size)
+    before = time.time()
+    solution, iterations = solve_cnf(generated_cnf_expression, cnf_size)
     print 'Solution:'
-    print solution
+    pretty_print(generated_cnf_expression, solution)
+    print 'Solution took %s time to compute running %s iterations' % (time.time() - before, iterations)
         
 if __name__ == '__main__':
     main()
