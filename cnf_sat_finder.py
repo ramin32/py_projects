@@ -52,7 +52,7 @@ import random
 import time
 import math
 import itertools
-import os
+#import os
 
 """Negates the input."""
 negate = lambda b: not b
@@ -152,7 +152,7 @@ def main():
     print 'Solution:'
     pretty_print(generated_cnf_expression, solution)
     print 'Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations)
-    print 'Architecture run on: \n%s' % ' '.join(os.uname()) 
+#    print 'Architecture run on: \n%s' % ' '.join(os.uname()) 
         
 if __name__ == '__main__':
     main()
