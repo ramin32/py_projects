@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.0
 
 ###############################################################################
 # cnf_sat_finder.py
@@ -52,7 +52,6 @@ import random
 import time
 import math
 import itertools
-#import os
 
 """Negates the input."""
 negate = lambda b: not b
@@ -60,22 +59,23 @@ negate = lambda b: not b
 """Returns the identify of the input."""
 identify = lambda b: b
 
-def for_loop(start, end):
-    """loop for long values."""
-    while start < end:
-        yield start
-        start += 1
-
-def generate_cnf_tuple(cnf_size):
+def generate_cnf_tuple(clause_size):
     """Generates a cnf list."""
     operators = (negate, identify)
-    return [random.choice(operators) for i in xrange(cnf_size)]
+    return [random.choice(operators) for i in range(clause_size)]
 
-def generate_random_cnf_expression(cnf_size, expression_size):
+def generate_random_list(var_size, var_range):
+    var_list = []
+    for i in range(var_size):
+        var_list.append(random.randint(0, var_range - 1))
+    return var_list
+
+
+def generate_random_cnf_expression(clause_size, expression_size):
     """Creates a list of cnf lists of given size."""
-    return [generate_cnf_tuple(cnf_size) for i in xrange(expression_size)]
+    return [generate_cnf_tuple(clause_size) for i in range(expression_size)]
 
-def create_boolean_groups(x, max_size, cnf_size):
+def create_boolean_groups(x, max_size, clause_size):
     """Constructs binary groups of the cnf size taken from splitting 
     the binary string representation of x."""
 
@@ -84,26 +84,26 @@ def create_boolean_groups(x, max_size, cnf_size):
     # map 0's and 1's to booleans
     booleans = [{'0': False, '1':True}[b] for b in raw_binary] 
     # split booleans list into tuples of cnf size
-    binary_groups = group_split(booleans, cnf_size)            
+    binary_groups = group_split(booleans, clause_size)            
     return binary_groups
 
 def group_split(seq, size):
     """Splits the given sequence into groups of size."""
-    return [seq[i:i+size] for i in xrange(0, len(seq), size)]
+    return [seq[i:i+size] for i in range(0, len(seq), size)]
 
 
 def evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
     """Plugs in the binary string into the cnf expression 
     evaluating to true or false."""
-    return all(any(f(b) for f,b in itertools.izip(cnf,booleans)) 
-               for cnf, booleans in itertools.izip(cnf_exp, boolean_groups))
+    return all(any(f(b) for f,b in zip(clause, booleans)) 
+               for clause, booleans in zip(cnf_exp, boolean_groups))
 
-def solve_cnf(cnf_exp, cnf_size):
+def solve_cnf(cnf_exp, clause_size):
     """Returns first cnf-sat match using bruteforce."""
-    size = len(cnf_exp) * cnf_size
+    size = len(cnf_exp) * clause_size
     iterations = 0
-    for i in for_loop(0, 2**size):
-        boolean_groups = create_boolean_groups(i, size, cnf_size)
+    for i in range(0, 2**size):
+        boolean_groups = create_boolean_groups(i, size, clause_size)
         if evaluate_cnf_with_booleans(cnf_exp, boolean_groups):
             return boolean_groups, iterations
         iterations += 1
@@ -122,7 +122,7 @@ def operator_str(operator, param='X'):
 def create_cnf_string(cnf, booleans):
     if booleans == None:
         booleans = itertools.repeat('X')
-    return " or ".join(operator_str(op, param) for op, param in  itertools.izip(cnf, booleans))
+    return " or ".join(operator_str(op, param) for op, param in zip(cnf, booleans))
 
 def parentecize(inner_part):
     return "".join(('(',inner_part ,')'))
@@ -131,28 +131,31 @@ def cnfize(cnf, booleans):
     return parentecize(create_cnf_string(cnf, booleans))
 
 def pretty_print(cnf_exp, solution=itertools.repeat(None)):
-    print '\t' + " and\n\t".join( cnfize(cnf, booleans) for cnf, booleans in itertools.izip(cnf_exp, solution))
+    print('\t' + " and\n\t".join( cnfize(cnf, booleans) for cnf, booleans in zip(cnf_exp, solution)))
     
 def main():
     random.seed(time.time())
     try:
-        cnf_size = int(sys.argv[1])
+        clause_size = int(sys.argv[1])
         input_size = int(sys.argv[2])
+#        variable_range = int(sys.argv[3])
     except IndexError:
-        print 'Usage: cnf_sat_finder.py <cnf size> <number of cnf tuples>'
+        print('Usage: cnf_sat_finder.py <cnf size> <number of cnf tuples>')
         sys.exit(1)
 
     
-    generated_cnf_expression = generate_random_cnf_expression(cnf_size, input_size)
-    print 'Generated CNF Expression:'
+    generated_cnf_expression = generate_random_cnf_expression(clause_size, input_size)
+#    generated_variable_list = generate_random_list(clause_size * input_size, variable_range)
+#    print(repr(generate_random_list))
+
+    print('Generated CNF Expression:')
     pretty_print(generated_cnf_expression)
     
     before = time.time()
-    solution, iterations = solve_cnf(generated_cnf_expression, cnf_size)
-    print 'Solution:'
+    solution, iterations = solve_cnf(generated_cnf_expression, clause_size)
+    print('Solution:')
     pretty_print(generated_cnf_expression, solution)
-    print 'Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations)
-#    print 'Architecture run on: \n%s' % ' '.join(os.uname()) 
+    print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
         
 if __name__ == '__main__':
     main()
