@@ -1,15 +1,16 @@
-##############################################################
-# cnf.py
-# Module with a CnfManager implementation to manage
-# cnf exressions.
-###############################################################
+#######################################################
+# cnf_print.py
+# A simple module with functions to pretty print a cnf 
+# expression.
+#######################################################
 
-import sys
-import random
-import time
-import math
 import itertools
+import cnf
+import sys
+import os
 
+import util
+import cnf_manager
 
 """Negates the input."""
 negate = lambda b: not b
@@ -17,64 +18,61 @@ negate = lambda b: not b
 """Returns the identify of the input."""
 identify = lambda b: b
 
-class CnfManager(object):
+operators = (negate, identify)
 
-    def __init__(self, clause_size, expression_size, variable_range):
-        self.clause_size = clause_size
-        self.expression_size = expression_size
-        self.variable_range = clause_size * expression_size
+class Cnf(object):
 
-    def generate_random_clause(self):
-        """Generates a cnf list."""
-        operators = (negate, identify)
-        return [random.choice(operators) for i in range(self.clause_size)]
-
-    def generate_random_variable_list(self):
-        var_list = []
-        list_size = self.clause_size * self.expression_size
-        for i in range(list_size):
-            var_list.append(random.randint(0, self.variable_range - 1))
-        return var_list
-
-
-    def generate_random_expression(self):
-        """Creates a list of cnf lists of given size."""
-        return [self.generate_random_clause() 
-                        for i in range(self.expression_size)]
-
-    def create_boolean_groups(self, x, max_size):
-        """Constructs binary groups of the cnf size taken from splitting 
-        the binary string representation of x."""
-
-        # strip the 0b hex header and pad with 0's
-        raw_binary = bin(x)[2:].zfill(max_size)                   
-        # map 0's and 1's to booleans
-        booleans = [{'0': False, '1':True}[b] for b in raw_binary] 
-        # split booleans list into tuples of cnf size
-        binary_groups = self.group_split(booleans)            
-        return binary_groups
-
-    def group_split(self, seq):
-        """Splits the given sequence into groups of size."""
-        return [seq[i:i+self.clause_size] 
-                    for i in range(0, len(seq), self.clause_size)]
-
+    def __init__(self, manager, function_list, literal_list):
+        self.manager = manager
+        self.function_list = function_list
+        self.literal_list = literal_list
+        self.solution = itertools.repeat(None)
 
     @staticmethod
-    def evaluate(cnf_exp, boolean_groups):
+    def operator_str(operator, param='X'):
+        """Returns a pretty string of the function."""
+        if operator == identify:
+           return 'identify(%s)' % param 
+        elif operator == negate:
+            return 'negate(%s)' % param 
+
+        raise ValueError('input %s not negate or identify' % str(operator))
+
+    @staticmethod
+    def create_cnf_string(cnf, booleans):
+        if booleans == None:
+            booleans = itertools.repeat('X')
+        return " or ".join(Cnf.operator_str(op, param) for op, param in zip(cnf, booleans))
+
+    @staticmethod
+    def cnfize(cnf, booleans):
+        return util.parentecize(Cnf.create_cnf_string(cnf, booleans))
+
+    def __str__(self):
+        zipped = zip(self.function_list, self.solution)
+        and_string = " and\n\t"
+        cnfized_string = and_string.join(Cnf.cnfize(cnf, booleans) for cnf, booleans in zipped)
+        return ''.join(('\t',cnfized_string))
+
+
+    def evaluate(self, boolean_groups):
         """Plugs in the binary string into the cnf expression 
         evaluating to true or false."""
         return all(any(f(b) for f,b in zip(clause, booleans)) 
-                   for clause, booleans in zip(cnf_exp, boolean_groups))
+                   for clause, booleans in zip(self.function_list, boolean_groups))
 
-    def solve(self, cnf_exp):
+    def solve(self):
         """Returns first cnf-sat match using bruteforce."""
-        size = len(cnf_exp) * self.clause_size
         iterations = 0
-        for i in range(0, 2**size):
-            boolean_groups = self.create_boolean_groups(i, size)
-            if self.evaluate(cnf_exp, boolean_groups):
-                return boolean_groups, iterations
+        variable_permutation_size = 2**self.manager.variable_range
+        for i in range(0, variable_permutation_size):
+            permutation = util.padded_binary(i, variable_permutation_size)[::-1]
+            
+            mapped_literal_list =list(map(lambda i,l: permutation[i], itertools.count(0), self.literal_list))
+            boolean_groups = util.group_split(mapped_literal_list, self.manager.clause_size)
+            if self.evaluate(boolean_groups):
+                self.solution = boolean_groups
+                break
             iterations += 1
-        return None, iterations
+        return iterations
 

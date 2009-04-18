@@ -52,8 +52,9 @@ import time
 import sys
 import os
 
-import cnf_print
+import cnf_manager
 import cnf
+import util
 
 def main():
     random.seed(time.time())
@@ -62,23 +63,25 @@ def main():
         input_size = int(sys.argv[2])
         variable_range = int(sys.argv[3])
     except IndexError:
-        print('Usage: cnf_sat_finder.py <cnf size> <number of cnf tuples>')
+        print('Usage: cnf_sat_finder.py <clause_size> <expression_size> <variable_range>')
         sys.exit(1)
 
-    
-    cnf_manager = cnf.CnfManager(clause_size, input_size, variable_range)
-    generated_cnf_expression = cnf_manager.generate_random_expression()
+    try: 
+        manager = cnf_manager.CnfManager(clause_size, input_size, variable_range)
+        generated_cnf = manager.generate_random_cnf()
 
-    print('Generated CNF Expression:')
-    cnf_print.pretty_print(generated_cnf_expression)
-    
-    before = time.time()
-    solution, iterations = cnf_manager.solve(generated_cnf_expression)
-    print('Solution:')
-    cnf_print.pretty_print(generated_cnf_expression, solution)
-    print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
+        print('Generated CNF Expression:')
+        print(generated_cnf)
 
-    cnf_print.print_arch()
+        before = time.time()
+        iterations = generated_cnf.solve()
+        print('Solution:')
+        print(generated_cnf)
+        print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
+
+        util.print_arch()
+    except KeyboardInterrupt:
+        print('Program terminated...')
     
         
 if __name__ == '__main__':
