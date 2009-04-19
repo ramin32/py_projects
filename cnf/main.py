@@ -73,9 +73,10 @@ def main():
         print('Generated CNF Expression:')
         print(generated_cnf)
 
+        print('Solving...')
         before = time.time()
         iterations = generated_cnf.solve()
-        print('Solution:')
+        print('Done!')
         print(generated_cnf)
         print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
 
