@@ -75,7 +75,7 @@ class Cnf(object):
             permutation = util.padded_binary(i, self.manager.variable_range)[::-1]
             
             # map 
-            mapped_literal_list = map(lambda i,l: permutation[i], itertools.count(0), self.literal_list)
+            mapped_literal_list = list(map(lambda i,l: permutation[i], itertools.count(0), self.literal_list))
             boolean_groups = util.group_split(mapped_literal_list, self.manager.clause_size)
             if self.evaluate(boolean_groups):
                 self.solution = boolean_groups
