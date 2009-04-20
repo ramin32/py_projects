@@ -2,14 +2,15 @@
 # cnf_manager.py
 #
 # Module with a CnfManager implementation to manage
-# Cnf objects .
+# Cnf objects.
+#
+# Author:
+# Ramin Rakhamimov
+# ramin32@gmail.com
+# http://raminrakhamimov.tk
 ###############################################################
 
-import sys
 import random
-import time
-import math
-import itertools
 
 import util
 import cnf

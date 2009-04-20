@@ -50,10 +50,8 @@
 import random
 import time 
 import sys
-import os
 
 import cnf_manager
-import cnf
 import util
 
 

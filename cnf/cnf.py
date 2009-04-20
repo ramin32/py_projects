@@ -1,18 +1,27 @@
-#######################################################
-# cnf_print.py
-# A simple module with functions to pretty print a cnf 
-# expression.
-#######################################################
+#######################################################################
+# cnf.py
+#
+# An ADT to represent a CNF object.
+# 2 lists are used: 
+#   1) the function list of negate or identify 
+#   2) the literal list which is a permutation of Xi's
+#
+# The solve method is used to brute-force a solution
+# A permutation from 0 to the varaible range in binary 
+# format is used for mapping the literal list to the proper values
+# before each permutation is evaluated.
+#
+# Author:
+# Ramin Rakhamimov
+# ramin32@gmail.com
+# http://raminrakhamimov.tk
+#######################################################################
 
 import itertools
-import cnf
-import sys
-import os
 
 import util
-import cnf_manager
 
-import pdb
+#import pdb
 
 """Negates the input."""
 negate = lambda b: not b
@@ -67,17 +76,20 @@ class Cnf(object):
                    for clause, booleans in zip(self.function_list, boolean_groups))
 
     def solve(self):
-        """Returns first cnf-sat match using bruteforce."""
+        """If a solution a find self.solution is set to it.
+        The number of iterations is the return value."""
         iterations = 0
         variable_permutation_size = 2**self.manager.variable_range
         for i in range(0, variable_permutation_size):
             # obtain the binary representation of permutation and reverse it
-            permutation = util.padded_binary(i, self.manager.variable_range)[::-1]
+            permutation = util.padded_binary(i, self.manager.variable_range)
             #pdb.set_trace()
             
-            # map 
+            # map each literal to the value indexed apporpriatly in the permutation 
             mapped_literal_list = [[permutation[item] for item in clause] 
                                                         for clause in self.literal_list]
+
+            # if permutation is the solution mark and break out.
             if self.evaluate(mapped_literal_list):
                 self.solution = permutation
                 break
