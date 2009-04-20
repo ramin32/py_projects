@@ -56,6 +56,7 @@ import cnf_manager
 import cnf
 import util
 
+
 def main():
     random.seed(time.time())
     try:

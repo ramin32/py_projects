@@ -12,6 +12,8 @@ import os
 import util
 import cnf_manager
 
+import pdb
+
 """Negates the input."""
 negate = lambda b: not b
 
@@ -47,17 +49,15 @@ class Cnf(object):
         return util.parentecize(Cnf.create_cnf_string(cnf, booleans))
 
     def __str__(self):
-        solution = 'None'
-        if self.solution is not None:
-            solution = ', '.join(map(lambda x: ''.join(('X', str(x))), self.solution))
-
         zipped = zip(self.function_list, self.literal_list)
-        and_string = " and\n\t"
+        and_string = ' and\n\t'
         cnfized_string = and_string.join(Cnf.cnfize(cnf, booleans) for cnf, booleans in zipped)
 
-        return ''.join(('\t',cnfized_string, 
-                        '\n\tSolution:',
-                        solution))
+        solution = 'None'
+        if self.solution:
+            solution = ['X%s = %s' % (i, value) for i, value in zip(itertools.count(0), self.solution)]
+
+        return '\t %s \n\tSolution: %s' % (cnfized_string, solution)
 
 
     def evaluate(self, boolean_groups):
@@ -73,12 +73,13 @@ class Cnf(object):
         for i in range(0, variable_permutation_size):
             # obtain the binary representation of permutation and reverse it
             permutation = util.padded_binary(i, self.manager.variable_range)[::-1]
+            #pdb.set_trace()
             
             # map 
-            mapped_literal_list = list(map(lambda i,l: permutation[i], itertools.count(0), self.literal_list))
-            boolean_groups = util.group_split(mapped_literal_list, self.manager.clause_size)
-            if self.evaluate(boolean_groups):
-                self.solution = boolean_groups
+            mapped_literal_list = [[permutation[item] for item in clause] 
+                                                        for clause in self.literal_list]
+            if self.evaluate(mapped_literal_list):
+                self.solution = permutation
                 break
             iterations += 1
         return iterations

@@ -6,7 +6,7 @@
 
 import random
 import sys
-import os
+import platform
 
 def group_split(seq, size):
     """Splits the given sequence into groups of given size."""
@@ -15,12 +15,11 @@ def group_split(seq, size):
 def print_arch():
     """Prints the arch name (only work on linux)."""
     if sys.platform == 'linux2':
-        print('Architecture run on:')
-        print(' '.join(os.uname()))
+        print('Architecture run on: %s' % ' '.join(platform.uname()))
 
 def parentecize(inner_part):
     """Returns a parentecized string."""
-    return "".join(('(',inner_part ,')'))
+    return '(%s)' % inner_part
 
 def padded_binary(x, max_size):
     """Returns a binary string representation of x.
