@@ -9,10 +9,13 @@ A brute force cnf solution finder running on randomly generated inputs.
 *** Usage  ***
 **************
 
-This program has been written for python 3.0 or higher. You must have this version of python installed to use this program.
+This program has been written for python 3.0 or higher. 
+You must have this version of python installed to use this program.
+
+cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num> [-quiet]
 
 Example:
-	ramin@Desktop:~/py_projects$ ./cnf_finder.py -clause_size 3 -exp_size 5 -variable_range 3
+	ramin@Desktop:~/py_projects$ ./cnf_finder.py -clause_size 3 -exp_size 5 -variable_range 3 -quiet
 	Generated CNF Expression:
 	        (identify(X2) or negate(X1) or negate(X0)) and
 	        (identify(X0) or identify(X0) or identify(X0)) and

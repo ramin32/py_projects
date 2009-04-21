@@ -28,8 +28,6 @@ class CnfManager(object):
         """Generates a cnf list."""
         return [random.choice(cnf.operators) for i in range(self.clause_size)]
 
-
-
     def generate_random_cnf(self):
         """Returns a randomly gnerated cnf object with the given properties."""
         generated_operator_list = [self.generate_random_clause() 

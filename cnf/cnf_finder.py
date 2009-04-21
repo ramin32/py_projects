@@ -14,6 +14,8 @@
 # containing either of the following 2 lambda functions:
 #   negate = lambda b: not b
 #   identify = lambda b: b
+# The literals are grouped together in a seperate list.
+# ie: ((0, 2, 1), (0, 2, 3), (0, 1, 1)) => ((X0, X2, X1), (X0, X2, X3), (X0, X1, X1))
 # 
 # These cnf expressions are randomly generated in to which the boolean 
 # permutations are plugged into to evaluate its truthiness.
@@ -22,11 +24,11 @@
 # 
 # 
 # Usage: 
-#   cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num>
+#   cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num> [-quiet]
 #
 # Example:
 #	
-#	ramin@Desktop:~/py_projects/cnf$ ./cnf_finder.py -clause_size 3 -exp_size 5 -variable_range 3
+#	ramin@Desktop:~/py_projects/cnf$ ./cnf_finder.py -clause_size 3 -exp_size 5 -variable_range 3 -quiet
 #	Generated CNF Expression:
 #	        (identify(X2) or negate(X1) or negate(X0)) and
 #	        (identify(X0) or identify(X0) or identify(X0)) and
@@ -84,7 +86,7 @@ def main():
 
         util.print_arch()
     except KeyboardInterrupt:
-        print('Program terminated...')
+        print('\n\nProgram terminated...')
     
         
 if __name__ == '__main__':
