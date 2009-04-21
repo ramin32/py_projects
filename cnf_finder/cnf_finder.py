@@ -3,22 +3,36 @@
 ###############################################################################
 # cnf_finder.py
 #
-# CNF-Satisfiable solution finder.
-#
-# Description:
-# Permutes through all the boolean variations from 0 till 2^n
-# Plugs in each boolean permutation into the cnf expression 
-# until a solution is found.
-#
-# cnf expressions are represented as a list of tuples 
-# containing either of the following 2 lambda functions:
-#   negate = lambda b: not b
-#   identify = lambda b: b
-# The literals are grouped together in a seperate list.
-# ie: ((0, 2, 1), (0, 2, 3), (0, 1, 1)) => ((X0, X2, X1), (X0, X2, X3), (X0, X1, X1))
+# Usage: cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num> [-quiet]
 # 
-# These cnf expressions are randomly generated in to which the boolean 
-# permutations are plugged into to evaluate its truthiness.
+# clause_size being the size of the cnf clause, exp_size the number of 
+# cnf clauses and variable_range the number of varying Xi literals to include 
+# in the expression.
+# 
+# The actual CNF object consist of a list of tuples of functions 
+# (with size clause_size) namely: identify and negate which simply return 
+# either the current boolean value or its negative. 
+# The CNF object also contains a list of literal tuples 
+# each containing a random permutation also of size clause_size.
+# 
+# i.e.
+# (negate , identify, negate) , (identify, identify, negate ), ...
+# (0, 2, 6),  (9, 6, 2), (22, 5, 6), ...
+# Due to the nature of CNF expressions the and and or operations can be 
+# assumed and do not need to be stored with in the CNF object.
+# 
+# Once the input is generated, a for loop is run starting 
+# from 0 up to 2^(variable_range). This allows each literal to properly 
+# receive a boolean value by simply indexing its location in a binary string.
+#
+# i.e.
+# To retrieve value of x3 simply execute '010010'[3] which will yield 0 or False.
+# 
+# Once all the literals are correctly mapped to a given permutation the 
+# set of literals is plugged into the set of functions. 
+# Each evaluated tuple is then or-ed and each tuple is anded with all 
+# the other tuples yielding a boolean value stating whether or not the 
+# current permutation is in-fact the solution.
 #
 ############################################################################### 
 # 
