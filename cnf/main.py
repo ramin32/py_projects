@@ -22,25 +22,30 @@
 # 
 # 
 # Usage: 
+#   ./main.py -clause_size <num> -exp_size <num> -variable_range <num>
 #   cnf_sat_finder.py <cnf size> <number of cnf tuples>
 #
 # Example:
-#   [ramin@laptop py_projects]$ ./cnf_sat_finder.py 3 3
-#   Generated CNF Expression:
-#       (identify(X) or identify(X) or identify(X)) and
-#       (identify(X) or negate(X) or identify(X)) and
-#       (identify(X) or negate(X) or identify(X))
-#   Solution:
-#       (identify(False) or identify(False) or identify(True)) and
-#       (identify(False) or negate(False) or identify(False)) and
-#       (identify(False) or negate(False) or identify(False))
-#   Solution took 0.00402617454529 sec to compute running 64 iterations
-#   Architecture run on: 
-#   Linux laptop 2.6.29-ARCH #1 SMP PREEMPT Tue Apr 7 12:47:56 UTC 2009 i686
-#   
-#
-#
-#
+#	
+#	ramin@Desktop:~/py_projects/cnf$ ./main.py -clause_size 3 -exp_size 5 -variable_range 3
+#	Generated CNF Expression:
+#	        (identify(X2) or negate(X1) or negate(X0)) and
+#	        (identify(X0) or identify(X0) or identify(X0)) and
+#	        (identify(X1) or identify(X2) or negate(X1)) and
+#	        (identify(X0) or identify(X0) or negate(X0)) and
+#	        (negate(X2) or identify(X2) or negate(X0))
+#	        Solution: None
+#	Solving...
+#	Done!
+#	        (identify(X2) or negate(X1) or negate(X0)) and
+#	        (identify(X0) or identify(X0) or identify(X0)) and
+#	        (identify(X1) or identify(X2) or negate(X1)) and
+#	        (identify(X0) or identify(X0) or negate(X0)) and
+#	        (negate(X2) or identify(X2) or negate(X0))
+#	        Solution: ['X0 = 0', 'X1 = 0', 'X2 = 0']
+#	Solution took 0.00039005279541 sec to compute running 0 iterations
+#	Architecture run on: Linux Desktop 2.6.27-11-generic #1 SMP Wed Apr 1 20:53:41 UTC 2009 x86_64 
+#	
 # Author:
 # Ramin Rakhamimov
 # ramin32@gmail.com
@@ -54,19 +59,18 @@ import sys
 import cnf_manager
 import util
 
-
 def main():
     random.seed(time.time())
     try:
-        clause_size = int(sys.argv[1])
-        input_size = int(sys.argv[2])
-        variable_range = int(sys.argv[3])
+        clause_size = int(util.parse_arg(sys.argv, 'clause_size'))
+        exp_size = int(util.parse_arg(sys.argv, 'exp_size'))
+        variable_range = int(util.parse_arg(sys.argv, 'variable_range'))
     except IndexError:
-        print('Usage: cnf_sat_finder.py <clause_size> <expression_size> <variable_range>')
+        print('Usage: .main.py -clause_size <num> -exp_size <num> -variable_range <num>')
         sys.exit(1)
 
     try: 
-        manager = cnf_manager.CnfManager(clause_size, input_size, variable_range)
+        manager = cnf_manager.CnfManager(clause_size, exp_size, variable_range)
         generated_cnf = manager.generate_random_cnf()
 
         print('Generated CNF Expression:')

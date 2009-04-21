@@ -66,7 +66,7 @@ class Cnf(object):
         if self.solution:
             solution = ['X%s = %s' % (i, value) for i, value in zip(itertools.count(0), self.solution)]
 
-        return '\t %s \n\tSolution: %s' % (cnfized_string, solution)
+        return '\t%s\n\tSolution: %s' % (cnfized_string, solution)
 
 
     def evaluate(self, boolean_groups):

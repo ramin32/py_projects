@@ -36,3 +36,11 @@ def generate_random_list(size, item_range):
     """Returns a randomized list of given size with elements within a range."""
     return [random.randint(0, item_range - 1) for i in range(size)]
 
+def parse_arg(argv, option):
+    """Retrieves a command line argument from the list of arguments."""
+    option_string = '-%s' % option
+    if option_string in argv:
+        index = argv.index(option_string)
+        return argv[index + 1]
+    return None
+
