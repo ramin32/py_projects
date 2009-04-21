@@ -67,7 +67,7 @@ def main():
         exp_size = int(util.parse_arg(sys.argv, 'exp_size'))
         variable_range = int(util.parse_arg(sys.argv, 'variable_range'))
     except Exception:
-        print('Usage: cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num>')
+        print('Usage: cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num> [-quiet]')
         sys.exit(1)
 
     try: 
