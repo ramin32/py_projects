@@ -19,9 +19,7 @@
 
 import itertools
 
-import util
-
-#import pdb
+from cnf_finder import util
 
 """Negates the input."""
 negate = lambda b: not b
@@ -72,6 +70,7 @@ class Cnf(object):
     def evaluate(self, boolean_groups):
         """Plugs in the binary string into the cnf expression 
         evaluating to true or false."""
+
         return all(any(f(b) for f,b in zip(clause, booleans)) 
                    for clause, booleans in zip(self.function_list, boolean_groups))
 
@@ -83,11 +82,12 @@ class Cnf(object):
         for i in range(0, variable_permutation_size):
             # obtain the binary representation of permutation and reverse it
             permutation = util.padded_binary(i, self.manager.variable_range)
-            #pdb.set_trace()
+
             
             # map each literal to the value indexed apporpriatly in the permutation 
             mapped_literal_list = [[permutation[item] for item in clause] 
                                                         for clause in self.literal_list]
+            print('Executing permutation: %s, Iteration: #%s, Mapped Literal List: %s' % (permutation, iterations, mapped_literal_list))
 
             # if permutation is the solution mark and break out.
             if self.evaluate(mapped_literal_list):

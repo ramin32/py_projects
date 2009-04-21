@@ -12,8 +12,8 @@
 
 import random
 
-import util
-import cnf
+from cnf_finder import util
+from cnf_finder import cnf
 
 
 class CnfManager(object):
