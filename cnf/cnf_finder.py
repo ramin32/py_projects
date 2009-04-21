@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.0
 
 ###############################################################################
-# main.py
+# cnf_finder.py
 #
 # CNF-Satisfiable solution finder.
 #
@@ -47,47 +47,12 @@
 #	Architecture run on: Linux Desktop 2.6.27-11-generic #1 SMP Wed Apr 1 20:53:41 UTC 2009 x86_64 
 #	
 # Author:
-# Ramin Rakhamimov
-# ramin32@gmail.com
-# http://raminrakhamimov.tk
-#################################################################################
+# Ramin Rakhamim# Usage: 
+#   ./main.py -clause_size <num> -exp_size <num> -variable_range <num>
+#   cnf_sat_finder.py <cnf size> <number of cnf tuples>
+#
+import cnf_finder.main
 
-import random
-import time 
-import sys
-
-import cnf_manager
-import util
-
-def main():
-    random.seed(time.time())
-    try:
-        clause_size = int(util.parse_arg(sys.argv, 'clause_size'))
-        exp_size = int(util.parse_arg(sys.argv, 'exp_size'))
-        variable_range = int(util.parse_arg(sys.argv, 'variable_range'))
-    except IndexError:
-        print('Usage: .main.py -clause_size <num> -exp_size <num> -variable_range <num>')
-        sys.exit(1)
-
-    try: 
-        manager = cnf_manager.CnfManager(clause_size, exp_size, variable_range)
-        generated_cnf = manager.generate_random_cnf()
-
-        print('Generated CNF Expression:')
-        print(generated_cnf)
-
-        print('Solving...')
-        before = time.time()
-        iterations = generated_cnf.solve()
-        print('Done!')
-        print(generated_cnf)
-        print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
-
-        util.print_arch()
-    except KeyboardInterrupt:
-        print('Program terminated...')
-    
-        
 if __name__ == '__main__':
-    main()
+    cnf_finder.main.main()
 
