@@ -86,7 +86,7 @@ class Cnf(object):
 
             
             # map each literal to the value indexed apporpriatly in the permutation 
-            mapped_literal_list = [[permutation[item] for item in clause] 
+            mapped_literal_list = [[int(permutation[item]) for item in clause] 
                                                         for clause in self.literal_list]
 
             if '-quiet' not in sys.argv:
