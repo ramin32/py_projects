@@ -90,7 +90,8 @@ class Cnf(object):
                                                         for clause in self.literal_list]
 
             if '-quiet' not in sys.argv:
-                print('Executing permutation: %s, Iteration: #%s, Mapped Literal List: %s' % (permutation, iterations, mapped_literal_list))
+                print('Executing Iteration: #%s, permutation: %s, Mapped Literal List: %s' % 
+                                            (iterations, permutation, mapped_literal_list))
 
             # if permutation is the solution mark and break out.
             if self.evaluate(mapped_literal_list):

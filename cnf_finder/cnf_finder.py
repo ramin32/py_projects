@@ -28,23 +28,24 @@
 #
 # Example:
 #	
-#	ramin@Desktop:~/py_projects/cnf$ ./cnf_finder.py -clause_size 3 -exp_size 5 -variable_range 3 -quiet
+#	ramin@Desktop:~/py_projects/cnf_finder$ ./cnf_finder.py  -clause_size 3 -exp_size 3 -variable_range 3 
 #	Generated CNF Expression:
-#	        (identify(X2) or negate(X1) or negate(X0)) and
-#	        (identify(X0) or identify(X0) or identify(X0)) and
-#	        (identify(X1) or identify(X2) or negate(X1)) and
-#	        (identify(X0) or identify(X0) or negate(X0)) and
-#	        (negate(X2) or identify(X2) or negate(X0))
-#	        Solution: None
+#		(identify(X0) or identify(X0) or identify(X0)) and
+#		(identify(X1) or identify(X0) or negate(X2)) and
+#		(negate(X2) or identify(X0) or negate(X1))
+#		Solution: None
 #	Solving...
+#	Executing Iteration: #0, permutation: 000, Mapped Literal List: [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+#	Executing Iteration: #1, permutation: 001, Mapped Literal List: [[0, 0, 0], [0, 0, 1], [1, 0, 0]]
+#	Executing Iteration: #2, permutation: 010, Mapped Literal List: [[0, 0, 0], [1, 0, 0], [0, 0, 1]]
+#	Executing Iteration: #3, permutation: 011, Mapped Literal List: [[0, 0, 0], [1, 0, 1], [1, 0, 1]]
+#	Executing Iteration: #4, permutation: 100, Mapped Literal List: [[1, 1, 1], [0, 1, 0], [0, 1, 0]]
 #	Done!
-#	        (identify(X2) or negate(X1) or negate(X0)) and
-#	        (identify(X0) or identify(X0) or identify(X0)) and
-#	        (identify(X1) or identify(X2) or negate(X1)) and
-#	        (identify(X0) or identify(X0) or negate(X0)) and
-#	        (negate(X2) or identify(X2) or negate(X0))
-#	        Solution: ['X0 = 0', 'X1 = 0', 'X2 = 0']
-#	Solution took 0.00039005279541 sec to compute running 0 iterations
+#		(identify(X0) or identify(X0) or identify(X0)) and
+#		(identify(X1) or identify(X0) or negate(X2)) and
+#		(negate(X2) or identify(X0) or negate(X1))
+#		Solution: ['X0 = 1', 'X1 = 0', 'X2 = 0']
+#	Solution took 0.00139284133911 sec to compute running 4/8 iterations.
 #	Architecture run on: Linux Desktop 2.6.27-11-generic #1 SMP Wed Apr 1 20:53:41 UTC 2009 x86_64 
 #	
 # Author:
@@ -67,7 +68,9 @@ def main():
         exp_size = int(util.parse_arg(sys.argv, 'exp_size'))
         variable_range = int(util.parse_arg(sys.argv, 'variable_range'))
     except Exception:
-        print('Usage: cnf_finder.py -clause_size <num> -exp_size <num> -variable_range <num> [-quiet]')
+        print('Usage: cnf_finder.py -clause_size <num>',
+                                    '-exp_size <num>',  
+                                    '-variable_range <num> [-quiet]')
         sys.exit(1)
 
     try: 
@@ -82,7 +85,8 @@ def main():
         iterations = generated_cnf.solve()
         print('Done!')
         print(generated_cnf)
-        print('Solution took %s sec to compute running %s iterations' % (time.time() - before, iterations))
+        print('Solution took %s sec to compute running %s/%s iterations.' % 
+                    (time.time() - before, iterations, 2**variable_range))
 
         util.print_arch()
     except KeyboardInterrupt:
